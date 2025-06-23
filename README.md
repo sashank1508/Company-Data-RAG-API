@@ -1,130 +1,267 @@
-# Company Data RAG API
+# 📊 Company Data RAG API
 
-This project is a FastAPI-based web service designed to manage and analyze company-related data. The API is capable of processing uploaded URLs and PDFs, generating summaries and keywords using both traditional NLP techniques (NLTK) and OpenAI's GPT models. Additionally, the system handles historical stock data and financial news summaries using external APIs such as **Alpha Vantage API** and **Yahoo Finance**.
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com/)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-FF6B6B?style=for-the-badge&logo=database&logoColor=white)](https://www.trychroma.com/)
+[![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![NLTK](https://img.shields.io/badge/NLTK-154f3c?style=for-the-badge&logo=python&logoColor=white)](https://www.nltk.org/)
+[![Yahoo Finance](https://img.shields.io/badge/Yahoo%20Finance-6001D2?style=for-the-badge&logo=yahoo&logoColor=white)](https://finance.yahoo.com/)
+[![Alpha Vantage](https://img.shields.io/badge/Alpha%20Vantage-0066CC?style=for-the-badge&logo=alpha&logoColor=white)](https://www.alphavantage.co/)
 
-## Features
+> **A comprehensive FastAPI-based Retrieval Augmented Generation (RAG) system for intelligent company data analysis, combining traditional NLP with cutting-edge AI technologies.**
 
-- **Company Data Management**: Upload and manage URLs and PDFs for company data.
-- **Text Summarization and Keyword Extraction**: Generates summaries and keywords using both NLTK and OpenAI's GPT models.
-- **ChromaDB for Vector Storage**: Stores the embedded content from URLs and PDFs for querying using ChromaDB.
-- **Rate Limiting**: Prevents excessive requests using Redis-based rate limiting.
-- **Financial Data via Yahoo Finance**: Fetches and resamples historical stock data from Yahoo Finance.
-- **News Summarization via Alpha Vantage API**: Extracts and summarizes financial news articles using the Alpha Vantage API and OpenAI.
+## 🚀 Overview
 
-## Pipeline
+The Company Data RAG API is a sophisticated web service designed to revolutionize how you manage, analyze, and extract insights from company-related data. By seamlessly integrating multiple data sources including URLs, PDFs, financial news, and historical stock data, this system provides intelligent, context-aware responses to complex business queries.
 
-1. **Company Data Upload**: URLs and PDFs are uploaded to the API. PDFs are processed, and their content is split into manageable chunks, which are then embedded and stored in ChromaDB.
-2. **Text Scraping**: The uploaded URLs are scraped for text data. Content from the website is extracted, summarized, and keywords are generated.
-3. **Text Storage**: Summaries and keywords (both NLTK-based and LLM-based) are stored in JSON files for each company.
-4. **Querying**: The stored content is queried using ChromaDB, and the results are enhanced with an LLM to generate a final response.
-5. **Stock Data via Yahoo Finance**: Fetch historical stock data from Yahoo Finance, resample based on a defined interval, and return it in a user-friendly format.
-6. **Financial News via Alpha Vantage API**: Fetch financial news from the Alpha Vantage API and summarize key articles with key financial insights and relevant keywords.
+### ✨ Key Highlights
 
-## API Documentation
+- **🧠 Advanced RAG Architecture**: Combines ChromaDB vector storage with OpenAI's GPT models for intelligent document retrieval and response generation
+- **📈 Financial Intelligence**: Real-time stock data and news analysis using Yahoo Finance and Alpha Vantage APIs
+- **🔍 Multi-Modal Processing**: Handles both web content and PDF documents with advanced text chunking
+- **⚡ High Performance**: Asynchronous processing with rate limiting and concurrent request handling
+- **🎯 Smart Analytics**: Dual keyword extraction using both NLTK and LLM-based approaches
 
-### Endpoints
+## 🏗️ Architecture
 
-1. **`/query_company_data`** (`GET`): 
-   - **Description**: Queries stored data for a specific company using ChromaDB and LLM-based results.
-   - **Parameters**: `company_name`, `query`, `n_results`
-   - **Response**: Returns a response generated from the query using embedded data and the LLM.
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Web Scraping  │    │   PDF Processing │    │  Financial APIs │
+│   (BeautifulSoup│ -> │   (LangChain)    │ -> │ (Yahoo/Alpha)   │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+          │                       │                       │
+          v                       v                       v
+┌─────────────────────────────────────────────────────────────────┐
+│                    ChromaDB Vector Store                        │
+│              (OpenAI Embeddings + Metadata)                    │
+└─────────────────────────────────────────────────────────────────┘
+          │
+          v
+┌─────────────────────────────────────────────────────────────────┐
+│                    RAG Query Engine                             │
+│           (Retrieval + OpenAI GPT Generation)                  │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-2. **`/save_company_data`** (`POST`):
-   - **Description**: Saves company-related data including URLs, PDFs, and a company description.
-   - **Parameters**: `company_name`, `company_description` (optional), `urls`, `pdf_files`
-   - **Response**: Returns a message indicating successful processing of URLs and PDFs.
+## 🛠️ Technology Stack
 
-3. **`/create_company_folder`** (`POST`):
-   - **Description**: Creates or updates a folder for a company.
-   - **Parameters**: `company_name`, `company_description` (optional)
-   - **Response**: Message confirming the folder creation or update.
+| Category | Technologies |
+|----------|-------------|
+| **Backend Framework** | FastAPI, Uvicorn |
+| **AI/ML** | OpenAI GPT-3.5-turbo, ChromaDB, LangChain |
+| **NLP** | NLTK, BeautifulSoup4 |
+| **Financial Data** | Yahoo Finance (yfinance), Alpha Vantage API |
+| **Database** | ChromaDB (Vector Database), Redis (Rate Limiting) |
+| **File Processing** | PyPDF2, aiofiles |
+| **Async/Concurrency** | asyncio, aiohttp |
+| **Data Processing** | pandas, pydantic |
 
-4. **`/upload_company_pdfs`** (`POST`):
-   - **Description**: Uploads and processes PDF files for a company, storing the content in ChromaDB.
-   - **Parameters**: `company_name`, `pdf_files`
-   - **Response**: Message indicating the success or failure of PDF uploads.
+## 📋 Prerequisites
 
-5. **`/upload_company_urls`** (`POST`):
-   - **Description**: Uploads and processes URLs for a company. The URLs are scraped for content and stored in ChromaDB.
-   - **Parameters**: `company_name`, `urls`
-   - **Response**: Lists successfully processed, failed, and skipped URLs.
+- **Python 3.8+**
+- **OpenAI API Key** ([Get yours here](https://platform.openai.com/api-keys))
+- **Alpha Vantage API Key** ([Register here](https://www.alphavantage.co/support/#api-key))
+- **Redis Server** (Optional, for rate limiting)
 
-6. **`/list_companies`** (`GET`):
-   - **Description**: Lists all companies stored in the system.
-   - **Parameters**: `page`, `page_size`
-   - **Response**: A paginated list of companies with metadata (URLs and PDFs count).
+## ⚙️ Installation
 
-7. **`/retrieve_company_data`** (`GET`):
-   - **Description**: Retrieves all stored data for a company.
-   - **Parameters**: `company_name`
-   - **Response**: Returns the company's uploaded URLs, PDFs, and description.
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd company-data-rag-api
+   ```
 
-8. **`/delete_company_data`** (`DELETE`):
-   - **Description**: Deletes specific URLs or PDFs for a company.
-   - **Parameters**: `company_name`, `pdfs_to_remove`, `urls_to_remove`
-   - **Response**: Lists successfully removed and not found items (PDFs or URLs).
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-9. **`/get_company_summary`** (`GET`):
-   - **Description**: Generates an overall summary and keywords for a company based on processed documents.
-   - **Parameters**: `company_name`
-   - **Response**: Returns an overall summary and a list of keywords for the company.
+3. **Environment setup**
+   Create a `.env` file in the root directory:
+   ```env
+   OPENAI_API_KEY=your_openai_api_key_here
+   ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key_here
+   ```
 
-10. **`/historical_stock_data`** (`GET`):
-    - **Description**: Fetches historical stock data for a company ticker using Yahoo Finance.
-    - **Parameters**: `ticker`, `start_date`, `end_date` (optional), `interval`
-    - **Response**: Returns historical stock data in JSON format based on the specified interval.
+4. **NLTK Data Download**
+   The application automatically downloads required NLTK data on startup.
 
-11. **`/financial_news_summary`** (`GET`):
-    - **Description**: Fetches and summarizes financial news articles using the Alpha Vantage API and generates keywords.
-    - **Parameters**: `ticker`, `start_date`, `end_date`
-    - **Response**: Returns a weekly summary of financial news and top articles.
+## 🚀 Quick Start
 
-### Utility Functions
+1. **Start the application**
+   ```bash
+   uvicorn main:app --reload --host 0.0.0.0 --port 1236
+   ```
 
-- **`ensure_directory_exists(directory: Path)`**: Ensures that the specified directory exists.
-- **`clean_text(text: str)`**: Cleans unwanted characters from text.
-- **`read_file(file_path: Path)`**: Asynchronously reads lines from a file.
-- **`write_to_file(file_path: Path, lines: List[str], mode: str = 'a')`**: Asynchronously writes lines to a file.
-- **`scrape_website(url: str, max_retries: int)`**: Scrapes a website and returns the cleaned content.
-- **`generate_llm_response(query: str, context: List[str])`**: Generates a response from the LLM based on the query and context.
-- **`generate_summary(text: str)`**: Generates a summary of a given text using the LLM.
-- **`extract_keywords_nltk(text: str, num_keywords: int)`**: Extracts keywords from the text using NLTK.
-- **`generate_keywords_llm(text: str, num_keywords: int)`**: Generates keywords from the text using the LLM.
-- **`update_company_summary_json(company_name: str, document_name: str, summary: str, keywords_nltk: List[str], keywords_llm: List[str])`**: Updates the company summary JSON file.
-- **`read_company_summary(company_name: str)`**: Reads the company summary JSON file.
-- **`generate_overall_summary(company_name: str, summaries: List[Dict])`**: Generates an overall summary using LLM based on individual document summaries.
-- **`generate_overall_keywords(company_name: str, summaries: List[Dict])`**: Generates overall keywords using LLM based on individual keywords.
-- **`fetch_news(ticker: str, start_date: datetime, end_date: datetime)`**: Fetches financial news from the Alpha Vantage API for a company ticker.
-- **`summarize_content(content: str, ticker: str)`**: Summarizes content focusing on a company's financial market using the LLM.
-- **`generate_keywords(content: str, ticker: str)`**: Generates keywords from financial news content.
-  
-### Core Functions
+2. **Access the API Documentation**
+   Open your browser and navigate to: `http://localhost:1236`
+   
+   The interactive Swagger UI will provide complete API documentation and testing interface.
 
-- **`create_or_update_company_folder(company_name: str, urls: Optional[List[str]], pdf_files: Optional[List[UploadFile]])`**: Creates or updates a folder for a company, processing URLs and PDFs.
-- **`process_urls(urls: List[str], company_name: str, debug: bool = False)`**: Scrapes and processes URLs for a company, storing content in ChromaDB.
-- **`process_pdfs(pdf_names: List[str], company_name: str, folder_path: Path)`**: Processes and stores PDF content for a company in ChromaDB.
-- **`resample_data(data: DataFrame, interval: Interval)`**: Resamples historical stock data based on a given interval using Yahoo Finance data.
-  
-## API Integrations
+3. **Your first company setup**
+   ```bash
+   curl -X POST "http://localhost:1236/create_company_folder" \
+        -H "Content-Type: application/json" \
+        -d '{"company_name": "Apple Inc", "company_description": "Technology company"}'
+   ```
 
-### Alpha Vantage API
+## 📚 Core Features
 
-The Alpha Vantage API is used for fetching financial news related to a specific company ticker. It provides real-time news sentiment analysis and article summaries.
+### 🏢 Company Data Management
+- **Folder Creation**: Organized storage for each company
+- **Multi-Source Ingestion**: URLs and PDF documents
+- **Metadata Tracking**: Automatic summary and keyword generation
+- **Content Deduplication**: Smart handling of duplicate sources
 
-To use the Alpha Vantage API, you must obtain an API key from [Alpha Vantage](https://www.alphavantage.co/support/#api-key) and set it in the `.env` file.
+### 🔍 Intelligent Querying
+- **Vector Search**: Semantic similarity using OpenAI embeddings
+- **Context-Aware Responses**: LLM-powered answer generation
+- **Source Attribution**: Optional source tracking in responses
+- **Configurable Results**: Adjustable result count and detail level
 
-### Yahoo Finance
+### 📊 Financial Intelligence
+- **Historical Stock Data**: Complete OHLCV data with custom intervals
+- **News Analysis**: AI-powered financial news summarization
+- **Market Sentiment**: Ticker-specific relevance scoring
+- **Keyword Extraction**: Financial context-aware keyword generation
 
-The Yahoo Finance API is used to fetch historical stock data for a given company ticker. It allows fetching stock data based on various intervals (daily, weekly, monthly, etc.).
+### 🔧 Processing Pipeline
+- **Async Web Scraping**: Concurrent URL processing with retry logic
+- **Smart Text Chunking**: Recursive character splitting for optimal embeddings
+- **Dual Keyword Extraction**: NLTK + LLM hybrid approach
+- **Summary Generation**: AI-powered content summarization
 
-## Environment Setup
+## 🎯 API Endpoints
 
-Clone the repository
-cd company-data-rag-api
-Install the dependencies:
-pip install -r requirements.txt
-Set up environment variables by creating a .env file in the root of the project and adding your API keys:
-OPENAI_API_KEY=your_openai_api_key
-ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
-Start the application:
-uvicorn main:app --reload
+### 📁 Company Management
+| Endpoint | Method | Description |
+|----------|---------|-------------|
+| `/create_company_folder` | POST | Initialize company data structure |
+| `/save_company_data` | POST | Comprehensive data upload (URLs + PDFs) |
+| `/upload_company_pdfs` | POST | PDF document processing |
+| `/upload_company_urls` | POST | Web content ingestion |
+| `/list_companies` | GET | Paginated company listing |
+| `/uploaded_data` | GET | Retrieve company data inventory |
+| `/delete_company_data` | DELETE | Selective data removal |
+
+### 🔍 Retrieval & Analysis
+| Endpoint | Method | Description |
+|----------|---------|-------------|
+| `/query_company_data` | GET | RAG-powered intelligent querying |
+| `/get_company_info` | GET | Document-level summaries and keywords |
+| `/get_company_summary` | GET | Overall company analysis |
+
+### 📈 Financial Services
+| Endpoint | Method | Description |
+|----------|---------|-------------|
+| `/historical_stock_data` | GET | Yahoo Finance stock data retrieval |
+| `/financial_news_summary` | GET | Alpha Vantage news analysis |
+
+## 💡 Usage Examples
+
+### Adding Company Data
+```python
+import requests
+
+# Create company folder
+response = requests.post("http://localhost:1236/create_company_folder", 
+                        json={"company_name": "Tesla Inc"})
+
+# Upload URLs and PDFs
+files = {'pdf_files': open('tesla_report.pdf', 'rb')}
+data = {
+    'company_name': 'Tesla Inc',
+    'urls': 'https://tesla.com, https://ir.tesla.com'
+}
+response = requests.post("http://localhost:1236/save_company_data", 
+                        files=files, data=data)
+```
+
+### Querying Company Data
+```python
+# Intelligent querying with RAG
+params = {
+    'company_name': 'Tesla Inc',
+    'query': 'What are the main business segments and revenue drivers?',
+    'n_results': 5,
+    'include_sources': True
+}
+response = requests.get("http://localhost:1236/query_company_data", params=params)
+print(response.json())
+```
+
+### Financial Data Analysis
+```python
+# Get historical stock data
+params = {
+    'ticker': 'TSLA',
+    'mode': 'range',
+    'start_date': '2024-01-01',
+    'end_date': '2024-12-31',
+    'interval': 'Daily'
+}
+response = requests.get("http://localhost:1236/historical_stock_data", params=params)
+
+# Get financial news summary
+news_params = {
+    'ticker': 'TSLA',
+    'start_date': '2024-01-01',
+    'end_date': '2024-01-07'
+}
+response = requests.get("http://localhost:1236/financial_news_summary", params=news_params)
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+```env
+# Required
+OPENAI_API_KEY=sk-...                    # OpenAI API key
+ALPHA_VANTAGE_API_KEY=your_key_here     # Alpha Vantage API key
+
+# Optional
+REDIS_URL=redis://localhost:6379        # Redis for rate limiting
+MAX_CONCURRENT_REQUESTS=5               # Concurrent processing limit
+CHUNK_SIZE=1000                         # Text chunking size
+CHUNK_OVERLAP=100                       # Text chunk overlap
+```
+
+### Directory Structure
+```
+company_data/
+├── {company_name}/
+│   ├── company_description.txt
+│   ├── desired_urls.txt
+│   ├── uploaded_urls.txt
+│   ├── {company_name}_pdfs.txt
+│   ├── company_summary.json
+│   └── {pdf_files}
+db/
+└── {chroma_collections}
+```
+
+## 🛡️ Security & Performance
+
+- **Rate Limiting**: Redis-based request throttling (10 requests/minute)
+- **Async Processing**: Non-blocking I/O for improved performance
+- **Concurrent Controls**: Semaphore-based request limiting
+- **Error Handling**: Comprehensive exception handling and logging
+- **User Agent Rotation**: Anti-bot detection for web scraping
+
+## 🔍 Monitoring & Logging
+
+The application includes comprehensive logging for:
+- Request processing status
+- Web scraping results
+- AI model interactions
+- File processing operations
+- Error tracking and debugging
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
